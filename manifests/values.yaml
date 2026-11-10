@@ -1,16 +1,12 @@
 backend:
   image:
     repository: registry.morrisons.site/graph-ad-reporter
-    digest: sha256:4473bfdf1d31c99a85fa3d2a74069a1135fda48c80d5a0bd6f20bc97ab8f88e3
-  # Expected commit SHA for the PostSync verify Job's /version check --
-  # bump alongside the digest above whenever a new image is published.
-  commitSha: "6f312b0f68ae78a1087b9399867a5e902e3ebdb3"
+    tag: v0.0.0
 
 ui:
   image:
     repository: registry.morrisons.site/ui-ad-reporter
-    digest: sha256:0c52e48cb4f22ee0c55e790327c4694c80cb9f7d294e67eeef689f8aba5453ec
-  commitSha: "5b55a12cb3f9a8968a2a3d42f8e8ef329a3b26db"
+    tag: v0.0.0
 
 verify:
   image:

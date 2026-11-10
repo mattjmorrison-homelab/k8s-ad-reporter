@@ -17,9 +17,9 @@ spec:
           command: ["/bin/sh", "/scripts/verify.sh"]
           env:
             - name: EXPECTED_BACKEND_COMMIT_SHA
-              value: {{ .Values.backend.commitSha | quote }}
+              value: {{ .Values.backend.image.tag | quote }}
             - name: EXPECTED_UI_COMMIT_SHA
-              value: {{ .Values.ui.commitSha | quote }}
+              value: {{ .Values.ui.image.tag | quote }}
           volumeMounts:
             - name: script
               mountPath: /scripts

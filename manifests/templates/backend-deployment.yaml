@@ -20,7 +20,7 @@ spec:
         - name: ad-reporter-zot-pull-secret
       containers:
         - name: ad-reporter-backend
-          image: "{{ .Values.backend.image.repository }}@{{ .Values.backend.image.digest }}"
+          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
           ports:
             - containerPort: 8000
           volumeMounts:
