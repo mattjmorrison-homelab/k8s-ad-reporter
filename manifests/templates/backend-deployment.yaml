@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ad-reporter-backend
+  namespace: ad-reporter
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: ad-reporter-backend
+  template:
+    metadata:
+      labels:
+        app: ad-reporter-backend
+    spec:
+      serviceAccountName: ad-reporter
+      imagePullSecrets:
+        - name: ad-reporter-zot-pull-secret
+      containers:
+        - name: ad-reporter-backend
+          image: "{{ .Values.backend.image.repository }}@{{ .Values.backend.image.digest }}"
+          ports:
+            - containerPort: 8000
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: ad-reporter-data

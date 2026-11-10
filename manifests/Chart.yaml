@@ -1,0 +1,5 @@
+apiVersion: v2
+name: homelab-ad-reporter
+description: Ad reporter (button + unresolved-reports list)
+version: 0.1.0
+appVersion: "0.1.0"
