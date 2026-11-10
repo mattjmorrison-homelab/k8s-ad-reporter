@@ -1,0 +1,24 @@
+backend:
+  image:
+    repository: registry.morrisons.site/graph-ad-reporter
+    # placeholder -- graph-ad-reporter hasn't published a real image yet
+    # (its CI publish step is still gated on other in-flight work). Update
+    # this digest, and commitSha below, once it does.
+    digest: sha256:0000000000000000000000000000000000000000000000000000000000000000
+  # Expected commit SHA for the PostSync verify Job's /version check --
+  # bumped alongside the digest above once a real image is published.
+  commitSha: "0000000000000000000000000000000000000000"
+
+ui:
+  image:
+    repository: registry.morrisons.site/ui-ad-reporter
+    # placeholder -- ui-ad-reporter hasn't published a real image yet
+    # (its CI publish step is still gated on other in-flight work). Update
+    # this digest, and commitSha below, once it does.
+    digest: sha256:0000000000000000000000000000000000000000000000000000000000000000
+  commitSha: "0000000000000000000000000000000000000000"
+
+verify:
+  image:
+    repository: alpine
+    digest: sha256:d9e853e87e55526f6b2917df91a2115c36dd7c696a35be12163d44e6e2a4b6bc # 3.20

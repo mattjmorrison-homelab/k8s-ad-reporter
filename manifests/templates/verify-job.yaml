@@ -1,0 +1,30 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ad-reporter-verify
+  namespace: ad-reporter
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation,HookSucceeded
+spec:
+  backoffLimit: 2
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: verify
+          image: "{{ .Values.verify.image.repository }}@{{ .Values.verify.image.digest }}"
+          command: ["/bin/sh", "/scripts/verify.sh"]
+          env:
+            - name: EXPECTED_BACKEND_COMMIT_SHA
+              value: {{ .Values.backend.commitSha | quote }}
+            - name: EXPECTED_UI_COMMIT_SHA
+              value: {{ .Values.ui.commitSha | quote }}
+          volumeMounts:
+            - name: script
+              mountPath: /scripts
+      volumes:
+        - name: script
+          configMap:
+            name: ad-reporter-verify-script
+            defaultMode: 0555

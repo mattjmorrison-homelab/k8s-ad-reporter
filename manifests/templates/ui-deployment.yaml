@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ad-reporter-ui
+  namespace: ad-reporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ad-reporter-ui
+  template:
+    metadata:
+      labels:
+        app: ad-reporter-ui
+    spec:
+      imagePullSecrets:
+        - name: ad-reporter-zot-pull-secret
+      containers:
+        - name: ad-reporter-ui
+          image: "{{ .Values.ui.image.repository }}@{{ .Values.ui.image.digest }}"
+          ports:
+            - containerPort: 80

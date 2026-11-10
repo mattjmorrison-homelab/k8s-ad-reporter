@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ad-reporter
+  namespace: ad-reporter
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: ad-reporter.morrisons.site
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ad-reporter-ui
+                port:
+                  number: 80
+    - host: graph-ad-reporter.morrisons.site
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ad-reporter-backend
+                port:
+                  number: 8000

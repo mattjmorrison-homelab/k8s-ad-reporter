@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ad-reporter-verify-script
+  namespace: ad-reporter
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+data:
+{{- (.Files.Glob "scripts/*").AsConfig | nindent 2 }}
