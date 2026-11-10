@@ -15,21 +15,17 @@ resource() {
   [ -n "$ns" ]
 }
 
-@test "ad-reporter-backend Deployment references graph-ad-reporter's image by repository+digest and exposes port 8000" {
+@test "ad-reporter-backend Deployment references graph-ad-reporter's image by repository+tag and exposes port 8000" {
   image=$(resource Deployment ad-reporter-backend | yq '.spec.template.spec.containers[0].image')
-  [[ "$image" == "registry.morrisons.site/graph-ad-reporter@sha256:"* ]]
-  digest="${image#*@sha256:}"
-  [ "${#digest}" -eq 64 ]
+  [ "$image" = "registry.morrisons.site/graph-ad-reporter:v0.0.0" ]
 
   port=$(resource Deployment ad-reporter-backend | yq '.spec.template.spec.containers[0].ports[0].containerPort')
   [ "$port" = "8000" ]
 }
 
-@test "ad-reporter-ui Deployment references ui-ad-reporter's image by repository+digest and exposes port 80" {
+@test "ad-reporter-ui Deployment references ui-ad-reporter's image by repository+tag and exposes port 80" {
   image=$(resource Deployment ad-reporter-ui | yq '.spec.template.spec.containers[0].image')
-  [[ "$image" == "registry.morrisons.site/ui-ad-reporter@sha256:"* ]]
-  digest="${image#*@sha256:}"
-  [ "${#digest}" -eq 64 ]
+  [ "$image" = "registry.morrisons.site/ui-ad-reporter:v0.0.0" ]
 
   port=$(resource Deployment ad-reporter-ui | yq '.spec.template.spec.containers[0].ports[0].containerPort')
   [ "$port" = "80" ]

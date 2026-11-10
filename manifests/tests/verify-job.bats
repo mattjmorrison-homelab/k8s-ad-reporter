@@ -17,11 +17,11 @@ resource() {
   [ "$policy" = "BeforeHookCreation,HookSucceeded" ]
 }
 
-@test "ad-reporter-verify Job's expected commit SHAs come from values" {
+@test "ad-reporter-verify Job's expected commit SHAs come from the image tags" {
   backend_sha=$(resource Job ad-reporter-verify | yq '.spec.template.spec.containers[0].env[] | select(.name == "EXPECTED_BACKEND_COMMIT_SHA") | .value')
   ui_sha=$(resource Job ad-reporter-verify | yq '.spec.template.spec.containers[0].env[] | select(.name == "EXPECTED_UI_COMMIT_SHA") | .value')
-  [ "$backend_sha" = "6f312b0f68ae78a1087b9399867a5e902e3ebdb3" ]
-  [ "$ui_sha" = "5b55a12cb3f9a8968a2a3d42f8e8ef329a3b26db" ]
+  [ "$backend_sha" = "v0.0.0" ]
+  [ "$ui_sha" = "v0.0.0" ]
 }
 
 @test "verify script checks /version on both ad-reporter hostnames" {
