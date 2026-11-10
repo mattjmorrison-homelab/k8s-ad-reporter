@@ -21,10 +21,10 @@ resource() {
   [ "$target" = "ad-reporter-zot-pull-secret" ]
 }
 
-@test "SecretStore authenticates as the ad-reporter Kubernetes-auth role via the ad-reporter ServiceAccount" {
+@test "SecretStore authenticates as the k8s-ad-reporter Kubernetes-auth role via the ad-reporter ServiceAccount" {
   role=$(resource SecretStore openbao | yq '.spec.provider.vault.auth.kubernetes.role')
   sa=$(resource SecretStore openbao | yq '.spec.provider.vault.auth.kubernetes.serviceAccountRef.name')
-  [ "$role" = "ad-reporter" ]
+  [ "$role" = "k8s-ad-reporter" ]
   [ "$sa" = "ad-reporter" ]
 }
 
