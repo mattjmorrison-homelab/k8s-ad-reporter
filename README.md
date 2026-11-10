@@ -1,4 +1,4 @@
-# homelab-ad-reporter
+# ad-reporter
 
 Helm chart and deployment manifests for the "I just saw an ad" reporter:
 a one-button PWA (`ui-ad-reporter`) plus a GraphQL API + SQLite store
