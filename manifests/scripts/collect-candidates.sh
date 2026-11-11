@@ -9,8 +9,8 @@ apk add --no-cache curl jq >/dev/null
 
 reports=$(curl -sf -X POST "$BACKEND_URL" \
   -H "Content-Type: application/json" \
-  -d '{"query":"{ unresolvedReports { id timestamp candidateDomains } }"}' \
-  | jq -c '.data.unresolvedReports[]')
+  -d '{"query":"{ ad { unresolved { id timestamp candidateDomains } } }"}' \
+  | jq -c '.data.ad.unresolved[]')
 
 if [ -z "$reports" ]; then
   echo "no unresolved reports"
@@ -42,7 +42,7 @@ echo "$reports" | while IFS= read -r report; do
   echo "report $id: found domains $domains"
 
   payload=$(jq -nc --arg id "$id" --argjson domains "$domains" \
-    '{query: "mutation($id: ID!, $domains: [String!]!) { recordCandidateDomains(id: $id, domains: $domains) { id } }", variables: {id: $id, domains: $domains}}')
+    '{query: "mutation($id: ID!, $domains: [String!]!) { ad { recordCandidateDomains(id: $id, domains: $domains) { id } } }", variables: {id: $id, domains: $domains}}')
 
   curl -sf -X POST "$BACKEND_URL" -H "Content-Type: application/json" -d "$payload" >/dev/null
 done
