@@ -31,4 +31,4 @@ check_commit_sha() {
 }
 
 check_commit_sha "https://graph-ad-reporter.morrisons.site/version" "$EXPECTED_BACKEND_COMMIT_SHA"
-check_commit_sha "https://ad-reporter.morrisons.site/version" "$EXPECTED_UI_COMMIT_SHA"
+check_commit_sha "https://ad-reporter.morrisons.site/version.json" "$EXPECTED_UI_COMMIT_SHA"
