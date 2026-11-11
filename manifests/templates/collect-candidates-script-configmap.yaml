@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ad-reporter-collect-candidates-script
+  namespace: ad-reporter
+data:
+{{- (.Files.Glob "scripts/collect-candidates.sh").AsConfig | nindent 2 }}

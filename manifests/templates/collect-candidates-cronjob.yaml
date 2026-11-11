@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: ad-reporter-collect-candidates
+  namespace: ad-reporter
+spec:
+  schedule: "*/5 * * * *"
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: collect-candidates
+              image: "{{ .Values.verify.image.repository }}@{{ .Values.verify.image.digest }}"
+              command: ["/bin/sh", "/scripts/collect-candidates.sh"]
+              volumeMounts:
+                - name: script
+                  mountPath: /scripts
+          volumes:
+            - name: script
+              configMap:
+                name: ad-reporter-collect-candidates-script
+                defaultMode: 0555
