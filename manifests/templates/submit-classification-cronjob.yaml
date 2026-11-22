@@ -1,0 +1,36 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: ad-reporter-submit-classification
+  namespace: ad-reporter
+spec:
+  schedule: "2-59/5 * * * *"
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: submit-classification
+              image: "{{ .Values.verify.image.repository }}@{{ .Values.verify.image.digest }}"
+              command: ["/bin/sh", "/scripts/submit-classification.sh"]
+              env:
+                - name: CONFIRMED_WEBHOOK_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: ad-reporter-discord-webhooks
+                      key: confirmed-webhook-url
+                - name: SUSPICIOUS_WEBHOOK_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: ad-reporter-discord-webhooks
+                      key: suspicious-webhook-url
+              volumeMounts:
+                - name: script
+                  mountPath: /scripts
+          volumes:
+            - name: script
+              configMap:
+                name: ad-reporter-submit-classification-script
+                defaultMode: 0555
