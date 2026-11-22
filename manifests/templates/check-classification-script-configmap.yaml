@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ad-reporter-check-classification-script
+  namespace: ad-reporter
+data:
+{{- (.Files.Glob "scripts/check-classification.sh").AsConfig | nindent 2 }}
