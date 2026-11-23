@@ -39,8 +39,8 @@ resource() {
   [ "$hook" = "none" ]
 }
 
-@test "check-classification script talks to the public Pi-hole and graph-claude hostnames, and the in-cluster backend" {
+@test "check-classification script talks to the public Pi-hole and federated gateway hostnames, and the in-cluster backend" {
   grep -q 'ad-reporter-backend.ad-reporter.svc.cluster.local' scripts/check-classification.sh
   grep -q 'https://pihole.morrisons.site' scripts/check-classification.sh
-  grep -q 'https://graph-claude.morrisons.site' scripts/check-classification.sh
+  grep -q 'https://graphql.morrisons.site' scripts/check-classification.sh
 }
