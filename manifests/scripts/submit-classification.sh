@@ -3,7 +3,7 @@ set -eu
 
 BACKEND_URL="http://ad-reporter-backend.ad-reporter.svc.cluster.local:8000/graphql"
 PIHOLE_URL="https://pihole.morrisons.site"
-CLAUDE_URL="https://graph-claude.morrisons.site/"
+CLAUDE_URL="https://graphql.morrisons.site/"
 
 apk add --no-cache curl jq >/dev/null
 
