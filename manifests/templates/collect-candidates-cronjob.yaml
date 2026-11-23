@@ -11,15 +11,9 @@ spec:
       template:
         spec:
           restartPolicy: Never
+          imagePullSecrets:
+            - name: ad-reporter-zot-pull-secret
           containers:
             - name: collect-candidates
-              image: "{{ .Values.verify.image.repository }}@{{ .Values.verify.image.digest }}"
-              command: ["/bin/sh", "/scripts/collect-candidates.sh"]
-              volumeMounts:
-                - name: script
-                  mountPath: /scripts
-          volumes:
-            - name: script
-              configMap:
-                name: ad-reporter-collect-candidates-script
-                defaultMode: 0555
+              image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+              command: ["uv", "run", "python", "-m", "ad_reporter.cronjobs.collect_candidates"]

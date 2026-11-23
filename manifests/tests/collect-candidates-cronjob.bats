@@ -15,12 +15,10 @@ resource() {
   [ "$schedule" = "*/5 * * * *" ]
 }
 
-@test "ad-reporter-collect-candidates-script ConfigMap is NOT an ArgoCD hook" {
-  hook=$(resource ConfigMap ad-reporter-collect-candidates-script | yq '.metadata.annotations["argocd.argoproj.io/hook"] // "none"')
-  [ "$hook" = "none" ]
-}
+@test "ad-reporter-collect-candidates CronJob runs the collect_candidates module from the published backend image" {
+  image=$(resource CronJob ad-reporter-collect-candidates | yq '.spec.jobTemplate.spec.template.spec.containers[0].image')
+  [ "$image" = "registry.morrisons.site/graph-ad-reporter:v0.0.0" ]
 
-@test "collect-candidates script talks to in-cluster Services, not public hostnames" {
-  grep -q 'ad-reporter-backend.ad-reporter.svc.cluster.local' scripts/collect-candidates.sh
-  grep -q 'pihole.pihole.svc.cluster.local' scripts/collect-candidates.sh
+  command=$(resource CronJob ad-reporter-collect-candidates | yq -o=json -I=0 '.spec.jobTemplate.spec.template.spec.containers[0].command')
+  [ "$command" = '["uv","run","python","-m","ad_reporter.cronjobs.collect_candidates"]' ]
 }

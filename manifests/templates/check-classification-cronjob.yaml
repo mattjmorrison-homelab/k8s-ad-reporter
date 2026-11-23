@@ -11,10 +11,12 @@ spec:
       template:
         spec:
           restartPolicy: Never
+          imagePullSecrets:
+            - name: ad-reporter-zot-pull-secret
           containers:
             - name: check-classification
-              image: "{{ .Values.verify.image.repository }}@{{ .Values.verify.image.digest }}"
-              command: ["/bin/sh", "/scripts/check-classification.sh"]
+              image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+              command: ["uv", "run", "python", "-m", "ad_reporter.cronjobs.check_classification"]
               env:
                 - name: CONFIRMED_WEBHOOK_URL
                   valueFrom:
@@ -26,11 +28,3 @@ spec:
                     secretKeyRef:
                       name: ad-reporter-discord-webhooks
                       key: suspicious-webhook-url
-              volumeMounts:
-                - name: script
-                  mountPath: /scripts
-          volumes:
-            - name: script
-              configMap:
-                name: ad-reporter-check-classification-script
-                defaultMode: 0555
