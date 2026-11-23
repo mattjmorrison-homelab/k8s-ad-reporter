@@ -15,14 +15,12 @@ resource() {
   [ "$schedule" = "4-59/5 * * * *" ]
 }
 
-@test "ad-reporter-check-classification CronJob uses the shared verify image" {
+@test "ad-reporter-check-classification CronJob runs the check_classification module from the published backend image" {
   image=$(resource CronJob ad-reporter-check-classification | yq '.spec.jobTemplate.spec.template.spec.containers[0].image')
-  [ "$image" = "alpine@sha256:d9e853e87e55526f6b2917df91a2115c36dd7c696a35be12163d44e6e2a4b6bc" ]
-}
+  [ "$image" = "registry.morrisons.site/graph-ad-reporter:v0.0.0" ]
 
-@test "ad-reporter-check-classification CronJob mounts its script ConfigMap" {
-  configmap=$(resource CronJob ad-reporter-check-classification | yq '.spec.jobTemplate.spec.template.spec.volumes[0].configMap.name')
-  [ "$configmap" = "ad-reporter-check-classification-script" ]
+  command=$(resource CronJob ad-reporter-check-classification | yq -o=json -I=0 '.spec.jobTemplate.spec.template.spec.containers[0].command')
+  [ "$command" = '["uv","run","python","-m","ad_reporter.cronjobs.check_classification"]' ]
 }
 
 @test "ad-reporter-check-classification CronJob wires the Discord webhook env vars from the shared secret" {
@@ -34,13 +32,3 @@ resource() {
   [ "$suspicious_key" = "suspicious-webhook-url" ]
 }
 
-@test "ad-reporter-check-classification-script ConfigMap is NOT an ArgoCD hook" {
-  hook=$(resource ConfigMap ad-reporter-check-classification-script | yq '.metadata.annotations["argocd.argoproj.io/hook"] // "none"')
-  [ "$hook" = "none" ]
-}
-
-@test "check-classification script talks to the public Pi-hole and federated gateway hostnames, and the in-cluster backend" {
-  grep -q 'ad-reporter-backend.ad-reporter.svc.cluster.local' scripts/check-classification.sh
-  grep -q 'https://pihole.morrisons.site' scripts/check-classification.sh
-  grep -q 'https://graphql.morrisons.site' scripts/check-classification.sh
-}

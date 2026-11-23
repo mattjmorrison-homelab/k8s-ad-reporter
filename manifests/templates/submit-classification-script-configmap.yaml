@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: ad-reporter-submit-classification-script
-  namespace: ad-reporter
-data:
-{{- (.Files.Glob "scripts/submit-classification.sh").AsConfig | nindent 2 }}
