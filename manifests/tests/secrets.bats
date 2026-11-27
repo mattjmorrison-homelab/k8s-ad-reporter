@@ -28,7 +28,17 @@ resource() {
   [ "$sa" = "ad-reporter" ]
 }
 
-@test "this is the only ExternalSecret the chart renders" {
-  count=$(echo "$RENDERED" | yq eval-all 'select(.kind == "ExternalSecret")' - | yq eval-all '.metadata.name' - | grep -c .)
-  [ "$count" = "1" ]
+@test "ad-reporter-discord-webhooks ExternalSecret pulls both webhook URLs from the right remote keys" {
+  confirmed_key=$(resource ExternalSecret ad-reporter-discord-webhooks | yq '.spec.data[0].remoteRef.key')
+  suspicious_key=$(resource ExternalSecret ad-reporter-discord-webhooks | yq '.spec.data[1].remoteRef.key')
+  [ "$confirmed_key" = "homelab/service/admin-discord/k8s-ad-reporter/confirmed-webhook-url" ]
+  [ "$suspicious_key" = "homelab/service/admin-discord/k8s-ad-reporter/suspicious-webhook-url" ]
+
+  target=$(resource ExternalSecret ad-reporter-discord-webhooks | yq '.spec.target.name')
+  [ "$target" = "ad-reporter-discord-webhooks" ]
+}
+
+@test "the chart renders exactly the two expected ExternalSecrets" {
+  count=$(echo "$RENDERED" | yq eval-all '[select(.kind == "ExternalSecret")] | length' -)
+  [ "$count" = "2" ]
 }

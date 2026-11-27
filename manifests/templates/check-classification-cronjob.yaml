@@ -1,0 +1,30 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: ad-reporter-check-classification
+  namespace: ad-reporter
+spec:
+  schedule: "4-59/5 * * * *"
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        spec:
+          restartPolicy: Never
+          imagePullSecrets:
+            - name: ad-reporter-zot-pull-secret
+          containers:
+            - name: check-classification
+              image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+              command: ["uv", "run", "python", "-m", "ad_reporter.cronjobs.check_classification"]
+              env:
+                - name: CONFIRMED_WEBHOOK_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: ad-reporter-discord-webhooks
+                      key: confirmed-webhook-url
+                - name: SUSPICIOUS_WEBHOOK_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: ad-reporter-discord-webhooks
+                      key: suspicious-webhook-url
